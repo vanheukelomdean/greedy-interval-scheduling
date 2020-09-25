@@ -11,7 +11,7 @@ A solution to hackerrank problem [`Attending Workshops`](https://www.hackerrank.
 ```
  - Build candidate and attending workshop sets.
 
- - While there still exists dandidate workshops:
+ - While there still exists candidate workshops:
 
      - Find the workshop element with the earliest conclusion.
 
