@@ -1,8 +1,9 @@
 #include<bits/stdc++.h>
-#include <vector>
-#include <set>
 
 using namespace std;
+
+#include <vector>
+#include <set>
 
 struct Workshop {
     int start_time, duration, end_time;
@@ -28,56 +29,52 @@ Available_Workshops* initialize (int start_time[], int duration[], int n) {
 }
 
 int CalculateMaxWorkshops(Available_Workshops* ptr) {
-    Workshop* attendable_workshop;
-    set<Workshop*> attending, candidates;
-    set<Workshop*>::iterator it;
-    int earliest_end, num_candidates;
+    vector<Workshop>::iterator it, attending_it;
+    int earliest_end, num_attending, att_start, att_end;
 
-    for (int i = 0; i < ptr->n; ++i){
-        candidates.insert(&ptr->workshop_list[i]);
-    }
+    num_attending = 0;
 
-    num_candidates = candidates.size();
-
-    while (num_candidates > 0)
+    while (ptr->n > 0)
     {
         // Initialise earliest ending workshop to first candidate
-        attendable_workshop = *candidates.begin();
-        earliest_end = attendable_workshop->end_time;
+        attending_it = ptr->workshop_list.begin();
+        earliest_end = attending_it->end_time;
         
         // Find minimum end
-        for(Workshop* workshop : candidates) {
-            if (workshop->end_time < earliest_end) {
-                attendable_workshop = workshop;
-                earliest_end = attendable_workshop->end_time;
+        for(int i = 0; i < ptr->n; ++i) {
+            it = ptr->workshop_list.begin();
+            advance(it, i);
+            if (it->end_time < earliest_end) {
+                attending_it = it;
+                earliest_end = attending_it->end_time;
             }
         }
 
-        // Add earliest end to attending set
-        attending.insert(attendable_workshop);
-        candidates.erase(attendable_workshop);
-        --num_candidates;
+        ++ num_attending;
 
-        if (num_candidates == 0)
+        // Cache intersection boundaries of earliest ending workshop of candidates
+        att_start = attending_it->start_time;
+        att_end = attending_it->end_time;
+
+        ptr->workshop_list.erase(attending_it);
+        ptr->n -= 1;
+
+        if (ptr->n == 0)
             break;
 
         // Eliminate intersecting workshops from candidate set
-        for(int i = 0; i < num_candidates; ++i) {
-            it = candidates.begin();
+        for(int i = 0; i < ptr->n; ++i) {
+            it = ptr->workshop_list.begin();
             advance(it, i);
-            Workshop* workshop = *it;
-
-            if (workshop->start_time < attendable_workshop->end_time && 
-                attendable_workshop->start_time < workshop->end_time) {
-                
-                    candidates.erase(it);
-                    --num_candidates;
+            if (it->start_time < att_end && 
+                att_start < it->end_time) {
+                    ptr->workshop_list.erase(it);
+                    ptr->n -=  1;
                     --i;
             }
         }
     }
-
-    return attending.size();
+    return num_attending;
 }
 
 // Hackerrank testing template

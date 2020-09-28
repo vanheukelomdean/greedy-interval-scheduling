@@ -19,3 +19,9 @@ A solution to hackerrank problem [`Attending Workshops`](https://www.hackerrank.
 
      - Remove all elements from the canditate set which intersect the recently added attending workshop.
 ```
+
+##### Performance updates
+
+  - Write workshop vector in-place opposed to a candidate set
+  - Replace attending set with a counter
+  - More effective iterator usage
